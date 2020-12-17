@@ -7,7 +7,7 @@ date_time = datetime.datetime.now().strftime("%Y.%m.%d-%H.%M.%S")
 
 import tensorflow as tf
 from config import data_file_path, seq_length, BUFFER_SIZE, BATCH_SIZE
-from data_preprocessing import ProcessData
+from data_preprocessing import ProcessData, word_tokenize
 import build_model
 import get_plot
 import os
@@ -32,7 +32,7 @@ model = build_model.GRU(vocab_size = len(data.vocab),
             metrics=['sparse_categorical_accuracy'])
 
 
-model.load_weights("models/GRU_1/2020.12.16-11.13.11/adam_checkpoint/adam_checkpoint")
+model.load_weights("...")
 
 model.build(tf.TensorShape([1, None]))
 
@@ -44,7 +44,7 @@ def generate_text(model, start_string):
   num_generate = 500 
 
   # Converting our start string to numbers (vectorizing)
-  token_start_string = nltk.tokenize.word_tokenize(start_string, language='english')
+  token_start_string = word_tokenize(start_string)
   input_eval = [data.word2idx[s] for s in token_start_string]
   input_eval = tf.expand_dims(input_eval, 0) 
 
@@ -59,19 +59,19 @@ def generate_text(model, start_string):
   # Here batch size == 1
   model.reset_states() 
   for _ in range(num_generate): 
-      predictions = model(input_eval) 
-      # remove the batch dimension
-      predictions = tf.squeeze(predictions, 0)  
+    predictions = model(input_eval) 
+    # remove the batch dimension
+    predictions = tf.squeeze(predictions, 0)  
 
-      # using a categorical distribution to predict the character returned by the model
-      predictions = predictions / temperature  
-      predicted_id = tf.random.categorical(predictions, num_samples=1)[-1,0].numpy()  
+    # using a categorical distribution to predict the character returned by the model
+    predictions = predictions / temperature  
+    predicted_id = tf.random.categorical(predictions, num_samples=1)[-1,0].numpy()  
 
-      # We pass the predicted character as the next input to the model
-      # along with the previous hidden state
-      input_eval = tf.expand_dims([predicted_id], 0) 
+    # We pass the predicted character as the next input to the model
+    # along with the previous hidden state
+    input_eval = tf.expand_dims([predicted_id], 0) 
 
-      text_generated.append(data.idx2word[predicted_id])
+    text_generated.append(data.idx2word[predicted_id])
 
   return (start_string + ' '.join(text_generated))
 

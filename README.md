@@ -7,7 +7,7 @@ The data set that has been used is the dataset provided by keras included a coll
 
 Then we make sequences of 35 words and punctuation and we feed to the model the first 34 elements of each sequence and we divide the dataset of sequencies so that 60% would be the training set, 20% be the validation set and 20% be the test set.
 
-## Architecture Comparisson
+## Architecture Comparison
 To compare the different architectures we have trained three models with three layers. We use the sequential model of keras. First we add and embedding layer to the model of dimension 200, which is followed by a RNN layer of different architecture each time and then an Dense layer of dimension eqaul to the size of the vocabulary as an output layer with a softmax activation function. Below we give a description of the each model:
 
 ### SimpleRNN: 
@@ -63,7 +63,7 @@ We build the models via the build_model.py script which also exports the above i
 To compare the models; we train them each one with the following three optimizers Adam, RMSProp, SGD. In the script build_models.py there is a fucntion to help us set some callbacks in order to monitor the training procedure and saves each models' weights. We compare the models through means of sparse categorical crossentropy for measuring the loss and sparse categorical accuracy for accuracy. We train each pair for 30 epochs.
 
 ## Results
-The previous comparisson, anyone can refer to the plots, shows that the models with the GRU architecture trained wiht the Adam optimizer scores the highest validation accuracy score around 0.63. 
+The previous comparison, anyone can refer to the plots, shows that the models with the GRU architecture trained wiht the Adam optimizer scores the highest validation accuracy score around 0.63. 
 We decided to evaluate the performance of the GRU model by adding another GRU layer which performed purely.
 At the end we chose the GRU model with one layer to be our model for text generation. We have trained with the adam oprimizer for 100 epochs.
 

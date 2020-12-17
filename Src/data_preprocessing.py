@@ -4,6 +4,19 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 import nltk
 
+def word_tokenize(text):
+    def intersperse(lst, item):
+        result = [item] * (len(lst) * 2 - 1)
+        result[0::2] = lst
+        return result
+
+    sentences = [t.split('\n') for t in text.split('\n\n')]
+    sentences = intersperse([intersperse(t, '\n') for t in sentences], ['\n\n'])
+    words = [[item] for sublist in sentences for item in sublist]
+    words[0::2] = [nltk.tokenize.word_tokenize(item[0], language='english') for item in words if item[0] not in ['\n','\n\n']]
+    words = [item for sublist in words for item in sublist]
+    return words
+
 class ProcessData:
     nltk.download('punkt')
 
@@ -21,13 +34,14 @@ class ProcessData:
 
     def define_vocab(self):
 
+        nltk.download('punkt')
         print("\n\n########################################################################")
         print("separating words...")
-        self.words = nltk.tokenize.word_tokenize(self.data, language='english')
+        self.words = word_tokenize(self.data)
         print("defining the vocabulary...")
         self.vocab = sorted(set(self.words))
         print("########################################################################")
-
+        
     def stats(self):
         '''
         Print the number of total words and characters in the text and the number 
